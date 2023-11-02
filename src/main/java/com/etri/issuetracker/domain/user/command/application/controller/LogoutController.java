@@ -1,4 +1,4 @@
-package com.etri.issuetracker.user.command.application.controller;
+package com.etri.issuetracker.domain.user.command.application.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;

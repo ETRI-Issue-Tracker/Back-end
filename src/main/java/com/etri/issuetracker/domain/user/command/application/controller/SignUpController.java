@@ -1,11 +1,10 @@
-package com.etri.issuetracker.user.command.application.controller;
+package com.etri.issuetracker.domain.user.command.application.controller;
 
-import com.etri.issuetracker.user.command.application.dto.SignUpInfoDTO;
-import com.etri.issuetracker.user.command.application.service.SignUpService;
+import com.etri.issuetracker.domain.user.command.application.dto.SignUpInfoDTO;
+import com.etri.issuetracker.domain.user.command.application.service.SignUpService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;

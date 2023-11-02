@@ -1,4 +1,5 @@
-package com.etri.issuetracker.user.command.application.dto;
+package com.etri.issuetracker.domain.user.command.application.dto;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignUpInfoDTO {
-
+public class LoginDTO {
     private String uid;
     private String password;
-    private String nickname;
 }

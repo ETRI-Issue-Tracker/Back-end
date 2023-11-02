@@ -1,4 +1,4 @@
-package com.etri.issuetracker.user.command.domain.aggregate;
+package com.etri.issuetracker.domain.user.command.domain.aggregate;
 
 
 import lombok.AllArgsConstructor;

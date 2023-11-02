@@ -1,8 +1,8 @@
-package com.etri.issuetracker.user.command.application.service;
+package com.etri.issuetracker.domain.user.command.application.service;
 
-import com.etri.issuetracker.user.command.application.dto.SignUpInfoDTO;
-import com.etri.issuetracker.user.command.domain.repository.MemberRepository;
-import com.etri.issuetracker.user.command.domain.service.MemberSerivce;
+import com.etri.issuetracker.domain.user.command.domain.repository.MemberRepository;
+import com.etri.issuetracker.domain.user.command.domain.service.MemberSerivce;
+import com.etri.issuetracker.domain.user.command.application.dto.SignUpInfoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

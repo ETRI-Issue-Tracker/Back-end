@@ -1,7 +1,7 @@
-package com.etri.issuetracker.user.command.domain.service;
+package com.etri.issuetracker.domain.user.command.domain.service;
 
-import com.etri.issuetracker.user.command.application.dto.SignUpInfoDTO;
-import com.etri.issuetracker.user.command.domain.aggregate.Member;
+import com.etri.issuetracker.domain.user.command.domain.aggregate.Member;
+import com.etri.issuetracker.domain.user.command.application.dto.SignUpInfoDTO;
 import org.springframework.stereotype.Service;
 
 @Service

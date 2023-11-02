@@ -1,9 +1,9 @@
-package com.etri.issuetracker.user.command.application.service;
+package com.etri.issuetracker.domain.user.command.application.service;
 
-import com.etri.issuetracker.user.command.application.dto.LoginDTO;
-import com.etri.issuetracker.user.command.application.dto.UserInfoDTO;
-import com.etri.issuetracker.user.command.domain.aggregate.Member;
-import com.etri.issuetracker.user.command.domain.repository.MemberRepository;
+import com.etri.issuetracker.domain.user.command.application.dto.LoginDTO;
+import com.etri.issuetracker.domain.user.command.application.dto.UserInfoDTO;
+import com.etri.issuetracker.domain.user.command.domain.aggregate.Member;
+import com.etri.issuetracker.domain.user.command.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
