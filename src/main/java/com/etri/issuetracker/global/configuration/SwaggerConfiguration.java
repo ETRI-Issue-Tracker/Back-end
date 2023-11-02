@@ -35,4 +35,24 @@ public class SwaggerConfiguration {
                 .pathsToMatch(paths)
                 .build();
     }
+    @Bean
+    public GroupedOpenApi login(){
+        String[] paths = {"/login/**"};
+
+        return GroupedOpenApi
+                .builder()
+                .group("IssueTracker Swagger v1-login")
+                .pathsToMatch(paths)
+                .build();
+    }
+    @Bean
+    public GroupedOpenApi signUp(){
+        String[] paths = {"/sign/**"};
+
+        return GroupedOpenApi
+                .builder()
+                .group("IssueTracker Swagger v1-signup")
+                .pathsToMatch(paths)
+                .build();
+    }
 }
