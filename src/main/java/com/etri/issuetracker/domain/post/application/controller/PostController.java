@@ -131,9 +131,9 @@ public class PostController {
 
     // ===========================test=====================================
 
-    @GetMapping("/test")
-    public ResponseEntity<Object> test(){
-        Object result = postService.test();
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
+//    @GetMapping("/test")
+//    public ResponseEntity<Object> test(){
+//        Object result = postService.test();
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//    }
 }
