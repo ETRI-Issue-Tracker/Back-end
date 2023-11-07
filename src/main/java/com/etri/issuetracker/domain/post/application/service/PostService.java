@@ -5,21 +5,25 @@ import com.etri.issuetracker.domain.post.domain.entity.Post;
 import com.etri.issuetracker.domain.post.domain.entity.vo.MemberVO;
 import com.etri.issuetracker.domain.post.domain.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PostService {
 
     private final PostRepository postRepository;
 
+    private final WebClient webClient;
+
     @Autowired
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, WebClient webClient) {
         this.postRepository = postRepository;
+        this.webClient = webClient;
     }
+
 
     // Create
     public PostDTO createPost(PostDTO createDTO) {
@@ -81,6 +85,24 @@ public class PostService {
 
 
     // 추가 기능 (유해 콘텐츠 판별 및 동조적 현상 판별)
+    public ResponseEntity<Object> test(){
+        Map<String, Object> bodyMap = new HashMap<>();
+        bodyMap.put("request_id", "jym7546@gmail,com");
+        Map<String, String> sentenceMap = new HashMap<>();
+        // 비교할 문장 1
+        sentenceMap.put("sentence1", "해변에서 파도 소리를 듣며 햇빛이 푸른 하늘에 미소 짓는 아름다운 풍경은 마치 자연의 음악처럼 우리를 감동시킵니다. 바닷가는 고요함과 평화를 선사하고, 파도는 모래에 부딪히며 우리에게 안정감을 줍니다.");
+        // 비교할 문장 2
+        sentenceMap.put("sentence2", "푸른 하늘 아래 한적한 마을, 그곳에 사는 사람들은 서로를 알고 존중합니다. 아침에는 새소리가 귀에 쏙 들며, 밤에는 별들이 하늘을 가득 채웁니다. 자연과 어우러지는 생활은 마음을 풍부하게 만들며, 스트레스로부터 해방시켜줍니다.진짜로");
 
+        bodyMap.put("argument", sentenceMap);
+
+        return webClient
+                .post()
+                .uri("/ParaphraseQA")
+                .bodyValue(bodyMap)
+                .retrieve()
+                .toEntity(Object.class)
+                .block();
+    }
 
 }
