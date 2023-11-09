@@ -69,7 +69,7 @@ public class PostService {
 
         int count = 0;
         int postCount = postRepository.findAll().size() - 1;
-        for (int i = postCount; i > postCount - 5; i--) {
+        for (int i = postCount; i > postCount - 5&& i>0 ; i--) {
             System.out.println("i = " + i);
             try {
                 TimeUnit.SECONDS.sleep(2);
@@ -104,7 +104,7 @@ public class PostService {
             }
         }
 
-        if (count > 3) {
+        if (count >= 2) {
             postRepository.save(new Post(newPost.getId(), newPost.getTitle(), newPost.getContent(), memberId, true));
             return new PostDTO(
                     newPost.getId(),
