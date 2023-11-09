@@ -9,18 +9,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/login")
+@CrossOrigin(origins = "http://192.168.0.2:3000/*")
 public class LoginController {
     private final LoginService loginService;
+
     @Operation(summary = "로그인", description = "사용자가 로그인을 함")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!, 로그인 성공", content = @Content(schema = @Schema(implementation = LoginDTO.class))),
@@ -28,7 +27,8 @@ public class LoginController {
             @ApiResponse(responseCode = "406", description = "NOT FOUND !!, password가 틀렸습니다.", content = @Content()),
     })
     @PostMapping
-    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO, HttpSession httpSession){
-        return loginService.checkUser(loginDTO,httpSession);
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO, HttpSession httpSession) {
+        return loginService.checkUser(loginDTO, httpSession);
     }
 }

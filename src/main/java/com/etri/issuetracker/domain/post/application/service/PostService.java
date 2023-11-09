@@ -31,32 +31,52 @@ public class PostService {
 
 
     // Create
-    public PostDTO createPost(PostDTO createDTO) {
+    public PostDTO createPost1(PostDTO createDTO) {
         MemberVO memberId = MemberVO.builder().memberId(createDTO.getMemberId()).build();
         Post newPost = postRepository.save(new Post(createDTO.getTitle(), createDTO.getContent(), memberId));
 
+        return new PostDTO(
+                newPost.getId(),
+                newPost.getTitle(),
+                newPost.getContent(),
+                newPost.getMemberId().getId(),
+                newPost.getCreatedDate(),
+                newPost.getBlock(),
+                newPost.isEcho()
+        );
+    }
+
+    public PostDTO createPost(PostDTO createDTO) {
+        MemberVO memberId = MemberVO.builder().memberId(createDTO.getMemberId()).build();
+        Post newPost = postRepository.save(new Post(createDTO.getTitle(), createDTO.getContent(), memberId));
+        Long postId = newPost.getId();
         int count = 0;
-        for (int i = 0; i < 5; i++) {
+        int postCount = postRepository.findAll().size();
+
+        for (int i = postCount; i > postCount - 5; i--) {
             Optional<Post> post = postRepository.findById((long) i);
-            if (post.get().isEcho() == newPost.isEcho()) {
-                return new PostDTO(
-                        newPost.getId(),
-                        newPost.getTitle(),
-                        newPost.getContent(),
-                        newPost.getMemberId().getId(),
-                        newPost.getCreatedDate(),
-                        newPost.getBlock(),
-                        true
-                );
-            } else {
-                Object result = apiService.classifier(newPost.getContent(), post.get().getContent());
-                String resultString = apiService.bjectToString(result);
-                if (resultString.equals("paraphrase")) {
+            Object result = apiService.classifier(newPost.getContent(), post.get().getContent());
+            String resultString = apiService.bjectToString(result);
+            if (resultString.equals("paraphrase")) {
+                if (post.get().isEcho()) {
+                    postRepository.save(new Post(newPost.getId(), newPost.getTitle(), newPost.getContent(), memberId, true));
+                    return new PostDTO(
+                            newPost.getId(),
+                            newPost.getTitle(),
+                            newPost.getContent(),
+                            newPost.getMemberId().getId(),
+                            newPost.getCreatedDate(),
+                            newPost.getBlock(),
+                            true
+                    );
+                } else {
                     count++;
                 }
             }
         }
+
         if (count > 3) {
+            postRepository.save(new Post(newPost.getId(), newPost.getTitle(), newPost.getContent(), memberId, true));
             return new PostDTO(
                     newPost.getId(),
                     newPost.getTitle(),
@@ -77,8 +97,6 @@ public class PostService {
                     newPost.isEcho()
             );
         }
-
-
     }
 
     // Update
@@ -117,6 +135,7 @@ public class PostService {
 
     public PostDTO findById(Long postId) {
         Optional<Post> post = postRepository.findById(postId);
+        System.out.println("post.get().toString() = " + post.get().toString());
         if (post.isPresent()) {
             return PostDTO.entityToDto(post.get());
         } else {

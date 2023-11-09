@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Schema(description = "Post DTO 객체")
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDTO {
+public class    PostDTO {
 
     private Long id;
 
