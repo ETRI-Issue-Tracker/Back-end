@@ -3,6 +3,7 @@ package com.etri.issuetracker.domain.post.application.service;
 import com.etri.issuetracker.domain.post.Infra.APIService;
 import com.etri.issuetracker.domain.post.application.dto.PostDTO;
 import com.etri.issuetracker.domain.post.domain.entity.Post;
+import com.etri.issuetracker.domain.post.domain.entity.enumType.Block;
 import com.etri.issuetracker.domain.post.domain.entity.vo.MemberVO;
 import com.etri.issuetracker.domain.post.domain.repository.PostRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class PostService {
@@ -48,15 +50,42 @@ public class PostService {
 
     public PostDTO createPost(PostDTO createDTO) {
         MemberVO memberId = MemberVO.builder().memberId(createDTO.getMemberId()).build();
-        Post newPost = postRepository.save(new Post(createDTO.getTitle(), createDTO.getContent(), memberId));
-        Long postId = newPost.getId();
-        int count = 0;
-        int postCount = postRepository.findAll().size();
 
+        Object analyzeResult = apiService.analyze(createDTO.getContent());
+        apiService.objectToString_v1(analyzeResult);
+
+
+
+        LinkedHashMap<String, Integer> classification = (LinkedHashMap<String, Integer>) apiService.classification(createDTO.getContent()).getBody();
+        int classificationResult = classification.get("result");
+        Block status = null;
+        switch (classificationResult){
+            case 0: status=Block.NORMAL; break;
+            case 1: status=Block.AGGRESSIVE; break;
+            case 2: status=Block.BIASED; break;
+            case 3: status=Block.BOTH; break;
+        }
+        Post newPost = postRepository.save(new Post(createDTO.getTitle(), createDTO.getContent(), memberId, status));
+
+        int count = 0;
+        int postCount = postRepository.findAll().size() - 1;
         for (int i = postCount; i > postCount - 5; i--) {
+            System.out.println("i = " + i);
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             Optional<Post> post = postRepository.findById((long) i);
             Object result = apiService.classifier(newPost.getContent(), post.get().getContent());
-            String resultString = apiService.bjectToString(result);
+
+            System.out.println("newPost.getContent()"+newPost.getContent());
+            System.out.println("post.get().getContent()"+post.get().getContent());
+
+            String resultString = apiService.objectToString(result);
+
+            System.out.println("resultString = " + resultString);
+
             if (resultString.equals("paraphrase")) {
                 if (post.get().isEcho()) {
                     postRepository.save(new Post(newPost.getId(), newPost.getTitle(), newPost.getContent(), memberId, true));

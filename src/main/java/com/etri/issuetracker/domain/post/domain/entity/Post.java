@@ -51,6 +51,15 @@ public class Post {
         this.echo = false;
     }
 
+    public Post(String title, String content, MemberVO memberId, Block block) {
+        this.title = title;
+        this.content = content;
+        this.memberId = memberId;
+        this.createdDate = LocalDateTime.now();
+        this.block = block;
+        this.echo=false;
+    }
+
     public Post(Long id, String title, String content, MemberVO memberId, boolean echo) {
         this.id = id;
         this.title = title;
