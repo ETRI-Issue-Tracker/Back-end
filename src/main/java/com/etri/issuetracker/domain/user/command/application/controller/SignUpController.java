@@ -9,14 +9,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/sign")
+@CrossOrigin(origins = "http://192.168.0.2:3000/*")
 public class SignUpController {
 
     private final SignUpService signUpService;
@@ -26,6 +24,7 @@ public class SignUpController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST !!, 이미 존재하는 id입니다.", content = @Content()),
     })
     @PostMapping
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?>  signUp(
             @Parameter(description = "SignUpInfoDTO", required = true, example = "{\n" +
                     "    \"uid\" : \"uid\",\n" +

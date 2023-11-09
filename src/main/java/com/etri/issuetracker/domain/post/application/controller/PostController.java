@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/post")
+@CrossOrigin(origins = "http://192.168.0.2:3000/*")
 public class PostController {
 
     private final PostService postService;
@@ -41,6 +42,7 @@ public class PostController {
             )
     })
     @PostMapping("/create")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> createPost(@RequestBody PostDTO createDTO) {
         PostDTO post = postService.createPost(createDTO);
         return new ResponseEntity<>(post, HttpStatus.CREATED);
@@ -62,6 +64,7 @@ public class PostController {
             )
     })
     @GetMapping("/all")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> findAll() {
         List<PostDTO> posts = postService.findAll();
         return new ResponseEntity<>(posts, HttpStatus.OK);
@@ -82,6 +85,7 @@ public class PostController {
             )
     })
     @GetMapping("/{id}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         PostDTO findPost = postService.findById(id);
         return new ResponseEntity<>(findPost, HttpStatus.OK);
@@ -103,6 +107,7 @@ public class PostController {
             )
     })
     @PutMapping("/update")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> updatePost(@RequestBody PostDTO updateDTO) {
         boolean result = postService.updatePost(updateDTO);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -124,6 +129,7 @@ public class PostController {
             )
     })
     @DeleteMapping("/{id}")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
         return new ResponseEntity<>("삭제 완료", HttpStatus.OK);
