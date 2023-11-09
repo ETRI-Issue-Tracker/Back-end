@@ -5,6 +5,7 @@ import com.etri.issuetracker.domain.post.application.dto.PostDTO;
 import com.etri.issuetracker.domain.post.domain.entity.Post;
 import com.etri.issuetracker.domain.post.domain.entity.enumType.Block;
 import com.etri.issuetracker.domain.post.domain.entity.vo.MemberVO;
+import com.etri.issuetracker.domain.post.domain.repository.PostCustomRepoImpl;
 import com.etri.issuetracker.domain.post.domain.repository.PostRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,13 +24,17 @@ public class PostService {
 
     private final APIService apiService;
 
+    private final PostCustomRepoImpl postCustomRepo;
+
 //    private final WebClient webClient;
 
     @Autowired
-    public PostService(PostRepository postRepository, APIService apiService) {
+    public PostService(PostRepository postRepository, APIService apiService, PostCustomRepoImpl postCustomRepo) {
         this.postRepository = postRepository;
         this.apiService = apiService;
+        this.postCustomRepo = postCustomRepo;
     }
+
 
 
     // Create
@@ -55,21 +60,30 @@ public class PostService {
         apiService.objectToString_v1(analyzeResult);
 
 
-
-        LinkedHashMap<String, Integer> classification = (LinkedHashMap<String, Integer>) apiService.classification(createDTO.getContent()).getBody();
-        int classificationResult = classification.get("result");
+//        LinkedHashMap<String, Integer> classification = (LinkedHashMap<String, Integer>) apiService.classification(createDTO.getContent()).getBody();
+//        int classificationResult = classification.get("result");
+        int classificationResult = 2;
         Block status = null;
-        switch (classificationResult){
-            case 0: status=Block.NORMAL; break;
-            case 1: status=Block.AGGRESSIVE; break;
-            case 2: status=Block.BIASED; break;
-            case 3: status=Block.BOTH; break;
+        switch (classificationResult) {
+            case 0:
+                status = Block.NORMAL;
+                break;
+            case 1:
+                status = Block.AGGRESSIVE;
+                break;
+            case 2:
+                status = Block.BIASED;
+                break;
+            case 3:
+                status = Block.BOTH;
+                break;
         }
+
         Post newPost = postRepository.save(new Post(createDTO.getTitle(), createDTO.getContent(), memberId, status));
 
         int count = 0;
         int postCount = postRepository.findAll().size() - 1;
-        for (int i = postCount; i > postCount - 5&& i>0 ; i--) {
+        for (int i = postCount; i > postCount - 5 && i > 0; i--) {
             System.out.println("i = " + i);
             try {
                 TimeUnit.SECONDS.sleep(2);
@@ -79,8 +93,8 @@ public class PostService {
             Optional<Post> post = postRepository.findById((long) i);
             Object result = apiService.classifier(newPost.getContent(), post.get().getContent());
 
-            System.out.println("newPost.getContent()"+newPost.getContent());
-            System.out.println("post.get().getContent()"+post.get().getContent());
+            System.out.println("newPost.getContent()" + newPost.getContent());
+            System.out.println("post.get().getContent()" + post.get().getContent());
 
             String resultString = apiService.objectToString(result);
 
@@ -194,4 +208,16 @@ public class PostService {
 //                .block();
 //    }
 
+    public List<Post> findByAggressive(){
+        return postCustomRepo.findByAggressive();
+    }
+    public List<Post> findByBiased(){
+        return postCustomRepo.findByBiased();
+    }
+    public List<Post> findByBlock(){
+        return postCustomRepo.findByBlock();
+    }
+    public List<Post> findByEcho(){
+        return postCustomRepo.findByEcho();
+    }
 }

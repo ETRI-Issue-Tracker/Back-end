@@ -3,6 +3,9 @@ package com.etri.issuetracker.domain.post.application.controller;
 import com.etri.issuetracker.domain.post.Infra.APIService;
 import com.etri.issuetracker.domain.post.application.dto.PostDTO;
 import com.etri.issuetracker.domain.post.application.service.PostService;
+import com.etri.issuetracker.domain.post.application.service.WordService;
+import com.etri.issuetracker.domain.post.domain.entity.Post;
+import com.etri.issuetracker.domain.post.domain.entity.Word;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,14 +29,15 @@ public class PostController {
 
     private final PostService postService;
 
-    private final APIService apiService;
+
+    private final WordService wordService;
+
 
     @Autowired
-    public PostController(PostService postService, APIService apiService) {
+    public PostController(PostService postService, WordService wordService) {
         this.postService = postService;
-        this.apiService = apiService;
+        this.wordService = wordService;
     }
-
 
     // Create
     @Operation(summary = "글 등록", description = "사용자가 만든 글 저장")
@@ -144,47 +148,44 @@ public class PostController {
         return new ResponseEntity<>("삭제 완료", HttpStatus.OK);
     }
 
-    // ===========================test=====================================
+    // ===========================추가 기능=====================================
 
-//    @GetMapping("/test")
-//    public ResponseEntity<Object> test() {
-//        Object result = apiService.analyze();
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        String jsonString = null;
-//        try {
-//            jsonString = objectMapper.writeValueAsString(result);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//        System.out.println("jsonString = " + jsonString);
-//        // JSON 객체를 생성합니다.
-//        JSONObject jsonObject = new JSONObject(jsonString);
-//
-//        JSONObject body = jsonObject.getJSONObject("body");
-//        // "sentence" 키의 배열 값을 가져옵니다.
-//        JSONArray sentences = body.getJSONObject("return_object").getJSONArray("sentence");
-//
-//        // 각 문장에서 NNP 및 NNG 단어를 추출하고 출력합니다.
-//        for (int i = 0; i < sentences.length(); i++) {
-//            JSONObject sentence = sentences.getJSONObject(i);
-//            JSONArray morp = sentence.getJSONArray("morp");
-//
-//            System.out.println("2");
-//            for (int j = 0; j < morp.length(); j++) {
-//                JSONObject morpInfo = morp.getJSONObject(j);
-//                String lemma = morpInfo.getString("lemma");
-//                String type = morpInfo.getString("type");
-//
-//                // NNP 및 NNG 단어인 경우 출력
-//                if (type.equals("NNP") || type.equals("NNG")) {
-//                    System.out.println("단어: " + lemma + ", 형태: " + type);
-//                }
-//            }
-//        }
-//
-//        return new ResponseEntity<>(result, HttpStatus.OK);
-//    }
+    // 단어 조회
+    @GetMapping("/words")
+    public ResponseEntity<?> findByWords(){
+        List<Word> words = wordService.findByWords();
+        return new ResponseEntity<>(words, HttpStatus.OK);
+    }
+
+    // 관리자 기능 조회
+    @GetMapping("/aggressive")
+    public ResponseEntity<?> findByAggressive(){
+        List<Post> result = postService.findByAggressive();
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/biased")
+    public ResponseEntity<?> findByBiased(){
+        List<Post> result = postService.findByBiased();
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/block")
+    public ResponseEntity<?> findByBlock(){
+        List<Post> result = postService.findByBlock();
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/echo")
+    public ResponseEntity<?> findByEcho(){
+        List<Post> result = postService.findByEcho();
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 
 
 }
