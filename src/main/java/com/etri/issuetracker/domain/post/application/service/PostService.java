@@ -7,12 +7,9 @@ import com.etri.issuetracker.domain.post.domain.entity.enumType.Block;
 import com.etri.issuetracker.domain.post.domain.entity.vo.MemberVO;
 import com.etri.issuetracker.domain.post.domain.repository.PostCustomRepoImpl;
 import com.etri.issuetracker.domain.post.domain.repository.PostRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.etri.issuetracker.domain.user.command.domain.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -25,14 +22,16 @@ public class PostService {
     private final APIService apiService;
 
     private final PostCustomRepoImpl postCustomRepo;
+    private  final MemberRepository memberRepository;
 
 //    private final WebClient webClient;
 
     @Autowired
-    public PostService(PostRepository postRepository, APIService apiService, PostCustomRepoImpl postCustomRepo) {
+    public PostService(PostRepository postRepository, APIService apiService, PostCustomRepoImpl postCustomRepo, MemberRepository memberRepository) {
         this.postRepository = postRepository;
         this.apiService = apiService;
         this.postCustomRepo = postCustomRepo;
+        this.memberRepository = memberRepository;
     }
 
 
@@ -57,12 +56,10 @@ public class PostService {
         MemberVO memberId = MemberVO.builder().memberId(createDTO.getMemberId()).build();
 
         Object analyzeResult = apiService.analyze(createDTO.getContent());
-        apiService.objectToString_v1(analyzeResult);
 
 
-//        LinkedHashMap<String, Integer> classification = (LinkedHashMap<String, Integer>) apiService.classification(createDTO.getContent()).getBody();
-//        int classificationResult = classification.get("result");
-        int classificationResult = 2;
+        LinkedHashMap<String, Integer> classification = (LinkedHashMap<String, Integer>) apiService.classification(createDTO.getContent()).getBody();
+        int classificationResult = classification.get("result");
         Block status = null;
         switch (classificationResult) {
             case 0:
@@ -102,7 +99,8 @@ public class PostService {
 
             if (resultString.equals("paraphrase")) {
                 if (post.get().isEcho()) {
-                    postRepository.save(new Post(newPost.getId(), newPost.getTitle(), newPost.getContent(), memberId, true));
+                    apiService.objectToString_v1(analyzeResult);
+                    postRepository.save(new Post(newPost.getId(), newPost.getTitle(), newPost.getContent(), memberId, newPost.getBlock(),true));
                     return new PostDTO(
                             newPost.getId(),
                             newPost.getTitle(),
@@ -119,7 +117,8 @@ public class PostService {
         }
 
         if (count >= 2) {
-            postRepository.save(new Post(newPost.getId(), newPost.getTitle(), newPost.getContent(), memberId, true));
+            postRepository.save(new Post(newPost.getId(), newPost.getTitle(), newPost.getContent(), memberId, newPost.getBlock(),true));
+            apiService.objectToString_v1(analyzeResult);
             return new PostDTO(
                     newPost.getId(),
                     newPost.getTitle(),
@@ -129,6 +128,7 @@ public class PostService {
                     newPost.getBlock(),
                     true
             );
+
         } else {
             return new PostDTO(
                     newPost.getId(),
@@ -166,12 +166,13 @@ public class PostService {
 
     // Read
     public List<PostDTO> findAll() {
-        System.out.println("통과!");
         List<Post> posts = postRepository.findAll();
         System.out.println("posts = " + posts);
         List<PostDTO> postDTOs = new ArrayList<>();
         for (Post post : posts) {
-            postDTOs.add(PostDTO.entityToDto(post));
+            PostDTO postDTO =PostDTO.entityToDto(post);
+            postDTO.setUid(memberRepository.findById(post.getMemberId().getId()).get().getUid());
+            postDTOs.add(postDTO);
         }
         return postDTOs;
     }

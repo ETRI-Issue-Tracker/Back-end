@@ -60,13 +60,13 @@ public class Post {
         this.echo=false;
     }
 
-    public Post(Long id, String title, String content, MemberVO memberId, boolean echo) {
+    public Post(Long id, String title, String content, MemberVO memberId,Block block ,boolean echo) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.memberId = memberId;
         this.createdDate = LocalDateTime.now();
-        this.block = Block.NORMAL;
+        this.block = block;
         this.echo = echo;
     }
 }

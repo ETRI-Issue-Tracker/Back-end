@@ -65,7 +65,6 @@ public class APIService {
 
     public String objectToString(Object result) {
         ObjectMapper objectMapper = new ObjectMapper();
-        System.out.println("result = " + result.toString());
         String resultJson = null;
         String resultString;
         try {
@@ -111,7 +110,6 @@ public class APIService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("jsonString = " + jsonString);
         // JSON 객체를 생성합니다.
         JSONObject jsonObject = new JSONObject(jsonString);
 

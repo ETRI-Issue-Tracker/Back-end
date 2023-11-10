@@ -24,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/post")
-@CrossOrigin(origins = "http://192.168.0.2:3000/*")
+@CrossOrigin(origins = "http://192.168.0.14:3000/*")
 public class PostController {
 
     private final PostService postService;
@@ -152,6 +152,7 @@ public class PostController {
 
     // 단어 조회
     @GetMapping("/words")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<?> findByWords(){
         List<Word> words = wordService.findByWords();
         return new ResponseEntity<>(words, HttpStatus.OK);
